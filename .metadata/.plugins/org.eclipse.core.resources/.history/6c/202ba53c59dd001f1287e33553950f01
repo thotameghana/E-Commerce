@@ -1,0 +1,341 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="com.ecommerce.model.*,java.util.*"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Items</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #131921;
+            --secondary-color: #232f3e;
+            --accent-color: #febd69;
+            --text-color: #333;
+            --light-text: #767676;
+            --background-color: #f3f3f3;
+            --card-background: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --footer-bg: #232f3e;
+            --footer-text: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 10px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .navbar .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .navbar .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .navbar .auth-buttons a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .navbar .auth-buttons a:hover {
+            color: var(--accent-color);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 30px 5%;
+            flex-grow: 1;
+        }
+
+        .product-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-color);
+        }
+
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-details {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-details h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .product-details p {
+            color: var(--light-text);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .ratings-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .ratings {
+            color: #ffa41c;
+            font-size: 14px;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #B12704;
+        }
+
+        .product-actions {
+            margin-top: auto;
+        }
+
+        .buy-now {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .buy-now:hover {
+            background-color: #f0ad4e;
+            transform: scale(1.02);
+        }
+
+        .buy-now img {
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 30px 5%;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            margin-right: 20px;
+            min-width: 200px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .navbar .search-bar {
+                margin: 10px 0;
+            }
+
+            .navbar .auth-buttons {
+                margin-top: 10px;
+            }
+
+            .container {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .footer-section {
+                flex-basis: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="home.jsp" class="logo">
+            <img src="https://img.icons8.com/?size=100&id=3UFq9axr5bPe&format=png&color=000000" alt="Logo">
+        </a>
+        <div class="search-bar">
+            <input type="text" placeholder="Search products...">
+        </div>
+        <div class="auth-buttons">
+            <a href="login.jsp" class="login">Login</a>
+            <a href="signup.jsp" class="signup">Sign Up</a>
+        </div>
+    </nav>
+    <div class="container">
+        <% 
+            List<ProductItems> productItems = (List<ProductItems>)session.getAttribute("productItems");
+            for(ProductItems pi : productItems) { 
+        %>
+        <div class="product-card">
+            <div class="product-image">
+                <img src="<%pi.getImagePath() %>" alt="<%= pi.getName() %>">
+            </div>
+            <div class="product-details">
+                <h3><%= pi.getName() %></h3>
+                <p><%= pi.getDescription() %></p>
+                <div class="ratings-price">
+                    <p class="ratings">
+                        <% for(int i = 0; i < Math.floor(pi.getRatings()); i++) { %>
+                            <i class="fas fa-star"></i>
+                        <% } %>
+                        <% if(pi.getRatings() % 1 != 0) { %>
+                            <i class="fas fa-star-half-alt"></i>
+                        <% } %>
+                        <span>(<%= pi.getRatings() %>)</span>
+                    </p>
+                    <p class="price">&#8377;<%=pi.getPrice() %></p>
+                </div>
+                <div class="product-actions">
+                    <button class="buy-now" onclick="window.location.href='BuyServlet?id=<%= pi.getProductItemId() %>'">
+                        <img src="https://img.icons8.com/material-rounded/24/fast-cart.png" alt="Buy Icon"> Buy Now
+                    </button>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <ul>
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Shipping</a></li>
+                    <li><a href="#">Returns</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <ul>
+                    <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+

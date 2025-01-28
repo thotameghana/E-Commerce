@@ -1,0 +1,60 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@ page import="com.ecommerce.model.*,java.util.*"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Product Items</title>
+<link rel="stylesheet" href="./styles/productItems.css?v=1.0">
+</head>
+<body>
+	<nav class="navbar">
+		<a href="home.jsp" class="logo"><img
+			src="https://img.icons8.com/?size=100&id=3UFq9axr5bPe&format=png&color=000000"
+			height="50px" width="50px"></a>
+		<div class="search-bar">
+			<input type="text" placeholder="Search products...">
+		</div>
+		<div class="auth-buttons">
+			<a href="login.jsp" class="login">Login</a> <a href="signup.jsp"
+				class="signup">Sign Up</a>
+		</div>
+	</nav>
+	<div class="container">
+		<!-- Product Card 1 -->
+		<%
+        	List<ProductItems> productItems=(List<ProductItems>)session.getAttribute("productItems");
+        	for(ProductItems pi:productItems){
+        %>
+		<div class="product-card">
+			<div class="product-image"
+				style="background-image: url('https://via.placeholder.com/300x200');"></div>
+			<div class="product-details">
+				<h3><%=pi.getName() %></h3>
+				<p><%=pi.getDescription() %></p>
+				<div class="ratings-price">
+					<p class="ratings"><%=pi.getRatings() %>&#9733
+					</p>
+					<p class="price"><%= pi.getPrice() %></p>
+				</div>
+				<!-- Add to Cart and Buy Buttons -->
+				<div class="product-actions">
+					<button class="add-to-cart">
+						<img
+							src="https://img.icons8.com/material-rounded/24/shopping-cart--v1.png"
+							alt="Cart Icon"> Add to Cart
+					</button>
+					<button class="buy-now" onclick="window.location.href='BuyServlet?id=<%=pi.getProductItemId() %>'">
+    					<img src="https://img.icons8.com/material-rounded/24/fast-cart.png" alt="Buy Icon"> Buy
+					</button>
+				</div>
+			</div>
+		</div>
+		<%
+        	}
+		%>
+
+	</div>
+</body>
+</html>

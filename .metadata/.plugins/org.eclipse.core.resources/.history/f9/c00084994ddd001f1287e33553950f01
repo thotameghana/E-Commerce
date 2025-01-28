@@ -1,0 +1,155 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="com.ecommerce.model.*,java.util.*"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Product Items</title>
+<link rel="stylesheet" href="./styles/productItems.css?v=1.0">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+    }
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #333;
+        padding: 10px 20px;
+        color: #fff;
+    }
+    .navbar .logo img {
+        height: 50px;
+        width: 50px;
+    }
+    .navbar .search-bar input {
+        padding: 5px;
+        border: none;
+        border-radius: 5px;
+    }
+    .navbar .auth-buttons a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        padding: 8px 15px;
+        background-color: #555;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+    .navbar .auth-buttons a:hover {
+        background-color: #777;
+    }
+    .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    .product-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    .product-image {
+        background-size: cover;
+        background-position: center;
+        height: 200px;
+    }
+    .product-details {
+        padding: 15px;
+        text-align: center;
+    }
+    .product-details h3 {
+        margin: 0 0 10px;
+        font-size: 18px;
+        color: #333;
+    }
+    .product-details p {
+        margin: 5px 0;
+        color: #666;
+        font-size: 14px;
+    }
+    .ratings-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+        font-size: 16px;
+    }
+    .ratings {
+        color: gold;
+    }
+    .price {
+        color: green;
+        font-weight: bold;
+    }
+    .product-actions {
+        display: flex;
+        justify-content: center;
+        padding: 10px 0;
+    }
+    .buy-now {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: background-color 0.3s;
+    }
+    .buy-now:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="home.jsp" class="logo">
+            <img src="https://img.icons8.com/?size=100&id=3UFq9axr5bPe&format=png&color=000000" alt="Logo">
+        </a>
+        <div class="search-bar">
+            <input type="text" placeholder="Search products...">
+        </div>
+        <div class="auth-buttons">
+            <a href="login.jsp" class="login">Login</a>
+            <a href="signup.jsp" class="signup">Sign Up</a>
+        </div>
+    </nav>
+    <div class="container">
+        <% 
+            List<ProductItems> productItems = (List<ProductItems>)session.getAttribute("productItems");
+            for(ProductItems pi : productItems) { 
+        %>
+        <div class="product-card">
+            <div class="product-image" style="background-image: url('https://via.placeholder.com/300x200');"></div>
+            <div class="product-details">
+                <h3><%= pi.getName() %></h3>
+                <p><%= pi.getDescription() %></p>
+                <div class="ratings-price">
+                    <p class="ratings"><%= pi.getRatings() %>&#9733;</p>
+                    <p class="price">&#8377; <%= pi.getPrice() %></p>
+                </div>
+                <div class="product-actions">
+                    <button class="buy-now" onclick="window.location.href='BuyServlet?id=<%= pi.getProductItemId() %>'">
+                        <img src="https://img.icons8.com/material-rounded/24/fast-cart.png" alt="Buy Icon"> Buy
+                    </button>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+package com.ecommerce.controller;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.ecommerce.model.Cart;
+import com.ecommerce.model.CartItem;
+import com.ecommerce.model.ProductItems;
+import com.ecommerce.dao.ProductDAO;
+import com.ecommerce.daoimpl.ProductDAOImpl;
+
+public class CartServlet extends HttpServlet {
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Cart cart = (Cart) session.getAttribute("cart");
+
+        if (cart == null) {
+            cart = new Cart();
+            session.setAttribute("cart", cart);
+        }
+
+        String action = req.getParameter("action");
+        int productId = Integer.parseInt(req.getParameter("productId"));
+
+        ProductDAO productDAO = new ProductDAOImpl();
+        ProductItems product = productDAO.getProductById(productId);
+
+        if (action.equals("add")) {
+            // Add to cart logic
+            if (product != null) {
+                CartItem cartItem = new CartItem(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    1 // Default quantity
+                );
+                cart.addItem(cartItem);
+            }
+            resp.sendRedirect("cart.jsp");
+        } else if (action.equals("buy")) {
+            // Buy now logic
+            if (product != null) {
+                CartItem cartItem = new CartItem(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    1 // Default quantity
+                );
+                cart.addItem(cartItem);
+            }
+            resp.sendRedirect("checkout.jsp");
+        }
+    }
+}

@@ -1,0 +1,391 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="com.ecommerce.model.*,java.util.*" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #131921;
+            --secondary-color: #232f3e;
+            --accent-color: #febd69;
+            --text-color: #333;
+            --light-text: #767676;
+            --background-color: #f3f3f3;
+            --card-background: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 10px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .navbar .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .navbar .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .navbar .auth-buttons a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .navbar .auth-buttons a:hover {
+            color: var(--accent-color);
+        }
+
+        .hero-slider {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide:first-child {
+            opacity: 1;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 28px;
+            margin: 40px 0 20px;
+            color: var(--secondary-color);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 0 5% 40px;
+        }
+
+        .product-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-color);
+        }
+
+        .product-card a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            margin: 15px 0 10px;
+            padding: 0 15px;
+            color: var(--text-color);
+        }
+
+        .product-card .discount {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+            margin: 0 15px 10px;
+            border-radius: 4px;
+        }
+
+        .product-card h4 {
+            color: var(--secondary-color);
+            font-size: 16px;
+            margin: 0 15px 15px;
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .no-products h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .no-products p {
+            color: var(--light-text);
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: #fff;
+            padding: 40px 5%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            margin-right: 20px;
+            min-width: 200px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+            }
+
+            .navbar .search-bar {
+                margin: 10px 0;
+            }
+
+            .navbar .auth-buttons {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 10px;
+            }
+
+            .hero-slider {
+                height: 200px;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .footer-section {
+                flex-basis: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="home.jsp" class="logo">
+            <img src="https://img.icons8.com/?size=100&id=3UFq9axr5bPe&format=png&color=000000" alt="Logo">
+        </a>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search products...">
+        </div>
+        <div class="auth-buttons">
+            <a href="login.jsp" class="login">Login</a>
+            <a href="signup.jsp" class="signup">Sign Up</a>
+        </div>
+    </nav>
+
+    <div class="hero-slider">
+        <div class="slide">
+            <img src="./homeImages/sale.jpg" alt="Sale">
+        </div>
+        <div class="slide">
+            <img src="./homeImages/online.jpg" alt="New Arrivals">
+        </div>
+        <div class="slide">
+            <img src="./homeImages/onlineshopping.jpg" alt="Special Offers">
+        </div>
+    </div>
+    
+    <section class="products">
+        <h2 class="section-title">Shop By Category</h2>
+        <div class="product-grid" id="productGrid">
+            <%
+                ArrayList<Products> productList = (ArrayList<Products>) session.getAttribute("products");
+                
+                if (productList == null || productList.isEmpty()) {
+            %>
+                <div class="no-products">
+                    <h3>No products available at the moment.</h3>
+                    <p>Check back later for exciting new products!</p>
+                </div>
+            <%
+                } else {
+                    for (Products product : productList) {
+            %>
+                <div class="product-card" data-name="<%= product.getName().toLowerCase() %>">
+                    <a href="ProductItemsServlet?productId=<%= product.getProductId() %>">
+                        <img src="<%= product.getImagePath() %>" alt="<%= product.getName() %>">
+                        <h3><%= product.getName() %></h3>
+                        <p class="discount"><%= product.getDiscount() %> OFF</p>
+                        <h4>Shop Now</h4>
+                    </a>
+                </div>
+            <%
+                    }
+                }
+            %>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <ul>
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Shipping & Returns</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <ul>
+                    <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 E-Commerce. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const productGrid = document.getElementById('productGrid');
+            const productCards = productGrid.querySelectorAll('.product-card');
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+
+                productCards.forEach((card) => {
+                    const productName = card.getAttribute('data-name');
+                    if (productName.includes(query)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Hero slider functionality
+            const slides = document.querySelectorAll('.slide');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                slides[currentSlide].style.opacity = 0;
+                slides[index].style.opacity = 1;
+                currentSlide = index;
+            }
+
+            function nextSlide() {
+                let next = (currentSlide + 1) % slides.length;
+                showSlide(next);
+            }
+
+            setInterval(nextSlide, 5000); // Change slide every 5 seconds
+        });
+    </script>
+</body>
+</html>
+
